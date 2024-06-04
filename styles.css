@@ -1,0 +1,180 @@
+:root {
+  --vlight: #382e32;
+  --light: #46393f;
+  --dark: #2a2226;
+  --vdark: #1c1719;
+  --pink: #ff66ab;
+  --yellow: #ffcc21;
+  --gold: #a77b23;
+  --white: #f9f9f9;
+  --dpink: #944d98;
+}
+
+
+
+/* Reset some default styles */
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  margin-left: 100px;
+  padding: 0px;
+  max-width: 800px;
+
+}
+
+a, span {
+  margin: 0;
+  padding: 0;
+}
+
+
+
+/* Set a background color for the body with a hint of blue */
+body {
+  background-color: var(--dark);
+  color:var(--white);  
+  font-family: Verdana, sans-serif;
+}
+
+
+/* Style the container for the content */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+/* Style the headings */
+h1, h2, h3 {
+  color: var(--white);
+  margin-bottom: 10px;
+  border-top: 8px solid var(--vdark);
+  padding-bottom: 10px;
+  text-align: left;
+  
+}
+
+/* Style the horizontal lines
+hr {
+  border: none;
+  border-top: 4px solid var(--white);
+  margin: 40px 0;
+} */
+
+
+
+/* --------------PARAGRAPH-------------- */
+/* Style the paragraphs */
+p {
+  background-color: var(--light);
+  padding: 20px;
+  margin-bottom: 20px;
+  color: var(--white);
+  border-radius: 12px;
+  border:   0px soild var(--light);
+  /* border: 3px solid var(--pink); */
+  
+  
+}
+
+
+p.highlight {
+  background-color: var(--vdark);
+  border: 3px solid var(--yellow);
+}
+
+p.special {
+  background-color: initial;
+  border: none;
+  box-shadow: none;
+  font-style: italic;
+  padding: 5px;
+  transition: color 0.08s;
+  color: #888; /* Adjust the color when hovered */
+}
+
+p.special:hover {
+  color: #ddd; /* Adjust the color when hovered */
+}
+
+
+/* Style the link text
+.link-text {
+  color: #fff;
+  text-decoration: underline;
+} */
+
+.link-text:hover {
+  opacity: 0.8;
+}
+
+/* --------------IMAGE AND VIDEO-------------- */
+/* Default image */
+
+.profile-photo {
+  position: absolute;
+  top: 30px;
+  left: 10px;
+  width: 140px;
+  height: auto;
+  border-radius: 50%; 
+}
+
+img {
+  display: block;
+  margin: 1 left;
+  /* border: 3px solid var(--pink); */
+  border-radius: 10px;
+  opacity: 0.95;
+  transition: opacity 0.08s, transform 0.08s;
+  margin-bottom: 20px;
+  width: 500px;
+  /* box-shadow: 0px 0px 5px var(--pink); */
+}
+
+/* Image while hovering */
+img:hover {
+  opacity: 1;
+  transform: scale(1.01);
+}
+
+/* Video */
+video {
+  display: block;
+  margin: 0 left 15px;
+  /* border: 4px solid var(--pink); */
+  border-radius: 10px;
+  margin-bottom: 20px;
+  width: 500px;
+  /* box-shadow: 0px 0px 5px var(--pink); */
+}
+
+/* Lists */
+ul {
+  margin-left: 20px; 
+}
+
+ul ul {
+  margin-left: 40px;
+}
+
+a {
+  color: var(--yellow); /* Default link color */
+}
+
+/* =========== */
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three equal-width columns, adjust as needed */
+  grid-gap: 10px; /* Adjust the gap between grid items as needed */
+}
+
+.grid-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+
+
