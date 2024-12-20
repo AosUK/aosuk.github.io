@@ -1,8 +1,8 @@
 document.body.style.backgroundColor = '#181A1B';
 cells_x =16;
-cells_y = 9;
-mine_count = 10;
-cell_size = 50;
+cells_y = 16;
+mine_count = 40;
+cell_size = 25;
 
 
 let mine_grid;
@@ -80,7 +80,6 @@ function make_board() {
         for (let x = 0; x < cells_x; x++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
-            cell.textContent = `${y},${x}`;
             cell.onselectstart = () => false;
             board_cells[y][x] = cell;
             board.appendChild(cell);
@@ -105,7 +104,7 @@ function get_texture_from_coord(y, x) {
 
     if (gp === 1) {
         if (nm === -1) {
-            return "mine.png";
+            return "mine_blasted.png";
         } else {
             return `${nm}.png`;
         }
@@ -115,23 +114,18 @@ function get_texture_from_coord(y, x) {
 
 }
 
-// render the board state from state arrays
+
+
 function update_board() {
     for (let y = 0; y < cells_y; y++) {
         for (let x = 0; x < cells_x; x++) {
             const cell = board_cells[y][x];
-            cell.textContent = `${y}`;
-            const img = document.createElement('img');
             const texture = 'textures/' + get_texture_from_coord(y, x);
-            img.src = texture;
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.ondragstart = () => false;
-            img.onselectstart = () => false;
-            
-            cell.innerHTML = '';
-            cell.appendChild(img);
-
+            if (cell.dataset.texture !== texture) {
+                cell.style.backgroundPosition = 'center';
+                cell.style.backgroundSize = '105% 105%';
+                cell.style.backgroundImage = `url(${texture})`;
+            }
         }
     }
 }
