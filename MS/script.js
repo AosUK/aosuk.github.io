@@ -1,7 +1,7 @@
 document.body.style.backgroundColor = '#181A1B';
-cells_x =9;
-cells_y = 8;
-mine_count = 14;
+cells_x =16;
+cells_y = 9;
+mine_count = 10;
 cell_size = 50;
 
 
@@ -131,6 +131,7 @@ function update_board() {
             
             cell.innerHTML = '';
             cell.appendChild(img);
+
         }
     }
 }
@@ -149,6 +150,7 @@ function left_click_action(y, x) {
             if (mine_grid[y][x] === 1) { //if its a mine, clicking it again closes it
                 gameplay_grid[y][x] = 0; 
             }
+            chord(y,x);
             break;
     }
     update_board();
@@ -171,21 +173,16 @@ function right_click_action(y, x) {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
+
+const start = performance.now();
 set_random_mines_grid();
 set_numerical_grid();
 set_gameplay_grid();
 make_board();
+const end = performance.now();
+console.log(`Execution time: ${end - start}ms`);
 
 
-
-console.log('Mine Grid:');
-mine_grid.forEach(row => console.log(row));
-
-console.log('Numerical Grid:');
-numerical_grid.forEach(row => console.log(row));
-
-console.log('Gameplay Grid:');
-gameplay_grid.forEach(row => console.log(row));
 
 
 
@@ -193,6 +190,7 @@ gameplay_grid.forEach(row => console.log(row));
 
 
 function mouse_position_to_grid_coordinate(mouseX, mouseY) {
+    
     const rect = board.getBoundingClientRect();
     const relativeX = mouseX - rect.left;
     const relativeY = mouseY - rect.top;
@@ -226,8 +224,18 @@ function updateMouseCoords() {
     });
 }
 
-document.addEventListener('mousedown', () => (isMouseDown = true));
-document.addEventListener('mouseup', () => (isMouseDown = false));
+
+document.addEventListener('mousedown', (event) => {
+    if (event.button === 0) { 
+        isMouseDown = true;
+    }
+});
+
+document.addEventListener('mouseup', (event) => {
+    if (event.button === 0) { 
+        isMouseDown = false;
+    }
+});
 
 // is mouse cursor over an opened number
 function mouseOnNumber() {
@@ -259,34 +267,75 @@ document.addEventListener('mouseup', (event) => {
     }
 });
 
+document.addEventListener('mousedown', (event) => {
+    if (event.button === 2) { 
+       right_click_action(mouse_coords.y,mouse_coords.x);
+    }
+});
+
 
 function initialize_visited_grid() {
     visited_grid = Array.from({ length: cells_y }, () => Array(cells_x).fill(false));
 }
 
 function zero_open(y, x) {
-    if (visited_grid[y][x]) return; // Prevent re-running the function on visited cells
+    if (visited_grid[y][x]) return;
 
-    // Mark this cell as visited
     visited_grid[y][x] = true;
 
-    // Open the current cell
     gameplay_grid[y][x] = 1;
 
-    // If the current cell is a number, don't open neighbors
     if (numerical_grid[y][x] !== 0) return;
 
-    // Loop through the 8 neighbors (with edge/corner checks)
     for (let dy = -1; dy <= 1; dy++) {
         for (let dx = -1; dx <= 1; dx++) {
             const ny = y + dy;
             const nx = x + dx;
 
-            // Check if the neighbor is within bounds
             if (ny >= 0 && ny < cells_y && nx >= 0 && nx < cells_x) {
-                // If the neighbor hasn't been visited yet and it's a zero, open it
                 if (!visited_grid[ny][nx] && gameplay_grid[ny][nx] === 0) {
                     zero_open(ny, nx);
+                }
+            }
+        }
+    }
+}
+
+document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+});
+
+function chord(y, x) {
+    const number = numerical_grid[y][x];
+    if (number === -1 || number === 0) return; 
+
+
+    let flagCount = 0;
+    for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+            const ny = y + dy;
+            const nx = x + dx;
+
+            if (ny >= 0 && ny < cells_y && nx >= 0 && nx < cells_x) {
+                if (gameplay_grid[ny][nx] === 2) {
+                    flagCount++;
+                }
+            }
+        }
+    }
+
+ if (flagCount === number) {
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                const ny = y + dy;
+                const nx = x + dx;
+                if (ny >= 0 && ny < cells_y && nx >= 0 && nx < cells_x) {
+                    if (gameplay_grid[ny][nx] === 0 && gameplay_grid[ny][nx] !== 2) {
+                        gameplay_grid[ny][nx] = 1; 
+                        if (numerical_grid[ny][nx]==0){
+                            zero_open(ny,nx);
+                        }
+                    }
                 }
             }
         }
