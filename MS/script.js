@@ -143,6 +143,9 @@ function update_board() {
 }
 
 function click_action(y, x, actionType) {
+    if (mouse_coords.x === null) {
+        return;
+    }
     if (actionType === 0) { // Left click action
         switch (gameplay_grid[y][x]) {
             case 0: // if cell is closed (and not flagged)
