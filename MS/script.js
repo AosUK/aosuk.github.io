@@ -143,7 +143,7 @@ function update_board() {
 }
 
 function click_action(y, x, actionType) {
-    if (mouse_coords.x === null) {
+    if (x === null) {
         return;
     }
     if (actionType === 0) { // Left click action
@@ -449,6 +449,7 @@ function open_all_openings() {
             }
         }
     }
+    update_board();
 }
 document.getElementById('all-openings-btn').addEventListener('click', open_all_openings);
 document.getElementById('reset-btn').addEventListener('click', refresh_board);
