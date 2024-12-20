@@ -11,13 +11,37 @@
           <p id="3bv-text"></p> 
           <p id="ca-text"></p> 
           <p id="eff-text"></p> 
-          <button id="all-openings-btn">Open all openings</button><br>
-          <button id="reset-btn">New board</button><br>
-          <button id="close-board-btn">Close board</button><br>
-          <button id="open-board-btn">Open board</button><br>
+          <button id="all-openings-btn">Open all openings (T)</button><br>
+          <button id="reset-btn">New board (R)</button><br>
+          <button id="close-board-btn">Close board (C)</button><br>
+          <button id="open-board-btn">Open board (V)</button><br>
           <input type="text" id="board-size-in" placeholder="X,Y,Minecount">
           <input type="text" id="bv3-range-in" placeholder="Min3BV,Max3bv">
           <div id="board"></div>
+          <p> M - key: place or remove mines.</p>
+          <p> Other keybind on buttons above.</p>
+          <p> Click on an open mine will close it again. </p> 
+          <p> 3bv range only checks 10,000 boards! You may need to re-run or use less extreme range.</p>
+          <p> Reccomended values for 3bv range:</p>
+
+          <div class="indent">
+            <p>Beginner (9x9/10): 
+              <div class="indent-2">
+                <p>Low: 0-2</p>
+                <p>High: 43-1000</p>
+              </div>
+            <p>Intermediate (16x16/40): 
+              <div class="indent-2">
+                <p>Low: 0-30</p>
+                <p>High: 110-1000</p>
+              </div>
+            <p>Expert (30x16/99): 
+                <div class="indent-2">
+                  <p>Low: 0-120</p>
+                  <p>High: 220-1000</p>
+                </div>
+          </div>
+          <p>Board size limit to 30x99.</p>
 
 
         </div>

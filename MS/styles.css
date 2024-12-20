@@ -16,5 +16,24 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+p {
+    line-height: 0.1;
+    margin-left: 80px;
+}
+button {
+    margin-left: 20px;
+}
+input {
+    margin-left: 20px;
+}
+  
+.indent p {
+    text-indent: 20px;
+  }
+
+.indent-2 p {
+    text-indent: 40px;
+  }
+
 
   

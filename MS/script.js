@@ -25,21 +25,21 @@ let max_bv3;
 
 // Just mine locations, 0 - Safe    1 - Mine
 function set_random_mines_grid() {
-    mine_count = Math.min((cells_x*cells_y)-1,mine_count);
+    mine_count = Math.min((cells_x * cells_y) - 1, mine_count);
     mine_grid = Array.from({ length: cells_y }, () => Array(cells_x).fill(0));
-    const cellIndices = new Set();
-    for (let i = 0; i < cells_x * cells_y; i++) {
-        cellIndices.add(i);
+    const availableCells = [];
+    for (let y = 0; y < cells_y; y++) {
+        for (let x = 0; x < cells_x; x++) {
+            availableCells.push({ x, y });
+        }
     }
-
     for (let i = 0; i < mine_count; i++) {
-        const chosenIndex = [...cellIndices][Math.floor(Math.random() * cellIndices.size)];
-        const row = Math.floor(chosenIndex / cells_x);
-        const col = chosenIndex % cells_y;
-        mine_grid[row][col] = 1;
-        cellIndices.delete(chosenIndex);
+        const randomIndex = Math.floor(Math.random() * availableCells.length);
+        const { x, y } = availableCells[randomIndex];
+        mine_grid[y][x] = 1;
+        availableCells.splice(randomIndex, 1);
     }
-}   
+} 
 
 // Underlying numerical grid, -1: Mine,    otherwise: adjecent minecount
 function set_numerical_grid() {
@@ -193,7 +193,6 @@ function click_action(y, x, actionType) {
 function refresh_board() {
     [cells_x, cells_y, mine_count] = readBoardSize();
     [min_bv3, max_bv3] = readBV3Range();
-    console.log(min_bv3);
     ready_to_render = false;
     let ready = false
     let attempts = 0; 
@@ -505,13 +504,17 @@ function readBoardSize() {
     const input = document.getElementById("board-size-in").value;
     const defaultValues = [16, 16, 40];
     const parsedValues = input.split(",").map(Number);
+
     if (
         parsedValues.length === 3 &&
-        parsedValues.every(value => Number.isInteger(value) && value > 0)
+        parsedValues.every(value => Number.isInteger(value) && value >= 0)
     ) {
-        return parsedValues; 
-    }
+        const width = Math.min(parsedValues[0], 30);
+        const height = Math.min(parsedValues[1], 99);
+        const mineCount = parsedValues[2];
 
+        return [width, height, mineCount]; 
+    }
     return defaultValues; 
 }
 
@@ -528,4 +531,34 @@ function readBV3Range() {
     }
 
     return defaultValues; 
+}
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "r" || event.key === "R") { 
+        refresh_board(); 
+    }
+    if (event.key === "t" || event.key === "T") { 
+        open_all_openings(); 
+    }
+    if (event.key === "c" || event.key === "C") { 
+        close_board(); 
+    }
+    if (event.key === "v" || event.key === "V") { 
+        open_board(); 
+    }
+    if (event.key === "m" || event.key === "M") { 
+        toggle_mine(mouse_coords.y,mouse_coords.x);
+    }
+});
+
+function toggle_mine(y, x) {
+    if (x === null) {
+        return;
+    }
+    open_board();
+    mine_grid[y][x] = 1-mine_grid[y][x];
+    gameplay_grid[y][x] = mine_grid[y][x]+1;
+    set_numerical_grid();
+    set_3bv_grid()
+    update_board();
 }
