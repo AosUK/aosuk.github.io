@@ -74,6 +74,7 @@ function set_gameplay_grid() {
 // set upt the grid html element one time
 function make_board() {
     board = document.getElementById('grid');
+    board.innerHTML = '';
 
     board.style.display = 'grid';
     board.style.gridTemplateColumns = `repeat(${cells_x}, 1fr)`;
@@ -436,3 +437,15 @@ function update_text() {
     const eff_text= document.getElementById('eff-text');
     eff_text.textContent = `IOE: ${ioe}`;
 }
+
+function open_all_openings() {
+    for (let y = 0; y < numerical_grid.length; y++) {
+        for (let x = 0; x < numerical_grid[y].length; x++) {
+            if (numerical_grid[y][x] === 0 && gameplay_grid[y][x] === 0) {
+                click_action(y, x, 0);
+            }
+        }
+    }
+}
+document.getElementById('all-openings-btn').addEventListener('click', open_all_openings);
+document.getElementById('reset-btn').addEventListener('click', refresh_board);
