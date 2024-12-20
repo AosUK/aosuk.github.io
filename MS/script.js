@@ -1,7 +1,7 @@
 document.body.style.backgroundColor = '#181A1B';
-cells_x =16;
-cells_y = 16;
-mine_count = 40;
+cells_x =9;
+cells_y = 9;
+mine_count = 2;
 cell_size = 25;
 
 
@@ -13,6 +13,9 @@ let board_cells;
 let mouse_coords = { x: null, y: null };
 let isMouseDown = false;
 let visited_grid;
+let bv3_grid;
+let bv3;
+let solved_bv3;
 
 // Just mine locations, 0 - Safe    1 - Mine
 function set_random_mines_grid() {
@@ -168,13 +171,15 @@ function right_click_action(y, x) {
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-const start = performance.now();
+// BOARD REFRESH
 set_random_mines_grid();
 set_numerical_grid();
 set_gameplay_grid();
+set_3bv_grid();
 make_board();
-const end = performance.now();
-console.log(`Execution time: ${end - start}ms`);
+
+
+console.log(bv3_grid.map(row => row.join(' ')).join('\n'));
 
 
 
@@ -334,4 +339,85 @@ function chord(y, x) {
             }
         }
     }
+}
+
+
+// 1 for every cell on the board that contriubutes to 3bv
+// note: only 1 cell can, and should be marked in each opening
+//numbered cells on the boarders of the openings are NOT 3bv: 0
+function set_3bv_grid() {
+    const visited = Array.from({ length: cells_y }, () => Array(cells_x).fill(false));
+    const isOpening = (y, x) => numerical_grid[y][x] === 0 && !visited[y][x];
+
+    const directions = [
+        [0, 1], [1, 0], [0, -1], [-1, 0],
+        [1, 1], [1, -1], [-1, 1], [-1, -1]
+    ];
+
+    bv3_grid = Array.from({ length: cells_y }, () => Array(cells_x).fill(0));
+    bv3 = 0;
+
+    function exploreOpening(y, x) {
+        const stack = [[y, x]];
+        visited[y][x] = true;
+
+        while (stack.length > 0) {
+            const [cy, cx] = stack.pop();
+
+            for (const [dy, dx] of directions) {
+                const ny = cy + dy;
+                const nx = cx + dx;
+
+                if (ny >= 0 && ny < cells_y && nx >= 0 && nx < cells_x) {
+                    if (!visited[ny][nx]) {
+                        visited[ny][nx] = true;
+
+                        if (numerical_grid[ny][nx] === 0) {
+                            stack.push([ny, nx]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for (let y = 0; y < cells_y; y++) {
+        for (let x = 0; x < cells_x; x++) {
+            if (isOpening(y, x)) {
+                bv3_grid[y][x] = 1;
+                exploreOpening(y, x);
+            }
+        }
+    }
+
+    for (let y = 0; y < cells_y; y++) {
+        for (let x = 0; x < cells_x; x++) {
+            if (!visited[y][x] && numerical_grid[y][x] >= 0) {
+                bv3_grid[y][x] = 1;
+            }
+        }
+    }
+
+    
+    for (let y = 0; y < cells_y; y++) {
+        for (let x = 0; x < cells_x; x++) {
+            if (bv3_grid[y][x] === 1) {
+                bv3++
+            }
+        }
+    }
+}
+
+function get_solved_3bv() {
+    let solvedCount = 0;
+
+    for (let y = 0; y < cells_y; y++) {
+        for (let x = 0; x < cells_x; x++) {
+            if (three_bv_grid[y][x] === 1 && gameplay_grid[y][x] === 1) {
+                solvedCount++;
+            }
+        }
+    }
+
+    return solvedCount;
 }
