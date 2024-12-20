@@ -1,0 +1,19 @@
+#grid {
+    height: auto;
+    margin: 20px auto;
+    border: 6px solid #565656;
+  }
+  
+.cell {
+    background-color: #2F2F2F;
+    aspect-ratio: 1;
+    border: 0.5px solid #1D1D1D;
+    line-height: 0;
+}
+  
+body {
+    color: #E0E0E0;
+    font-family: 'Roboto', sans-serif;
+}
+
+  

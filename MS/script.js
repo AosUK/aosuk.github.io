@@ -1,7 +1,7 @@
 document.body.style.backgroundColor = '#181A1B';
-cells_x =9;
-cells_y = 9;
-mine_count = 2;
+cells_x =16;
+cells_y = 16;
+mine_count = 40;
 cell_size = 25;
 
 
@@ -16,6 +16,8 @@ let visited_grid;
 let bv3_grid;
 let bv3;
 let solved_bv3;
+let click_action_count;
+let ioe;
 
 // Just mine locations, 0 - Safe    1 - Mine
 function set_random_mines_grid() {
@@ -131,55 +133,65 @@ function update_board() {
             }
         }
     }
+    solved_bv3 = get_solved_3bv();
+    if (click_action_count < 1 ) {
+        ioe = 1.00;
+    } else {ioe = solved_bv3/click_action_count;}
+    ioe = Math.round(ioe * 100) / 100;
+    update_text();
 }
 
-function left_click_action(y, x) {
-    switch (gameplay_grid[y][x]) {
-        case 0: // if cell is closed (and not flagged)
-            gameplay_grid[y][x] = 1; //cell becomes open
-            if (numerical_grid[y][x]==0){
-                initialize_visited_grid();
-                zero_open(y,x);
-            }
-            break;
+function click_action(y, x, actionType) {
+    if (actionType === 0) { // Left click action
+        switch (gameplay_grid[y][x]) {
+            case 0: // if cell is closed (and not flagged)
+                gameplay_grid[y][x] = 1; // cell becomes open
+                if (numerical_grid[y][x] == 0) {
+                    initialize_visited_grid();
+                    zero_open(y, x);
+                }
+                break;
 
-        case 1: // if cell is open
-            if (mine_grid[y][x] === 1) { //if its a mine, clicking it again closes it
-                gameplay_grid[y][x] = 0; 
-            }
-            chord(y,x);
-            break;
+            case 1: // if cell is open
+                if (mine_grid[y][x] === 1) { // if it's a mine, clicking it again closes it
+                    gameplay_grid[y][x] = 0;
+                    click_action_count-=2;
+                }
+                chord(y, x);
+                break;
+        }
+    } else if (actionType === 2) { // Right click action
+        switch (gameplay_grid[y][x]) {
+            case 0: // if cell is closed (and not flagged)
+                gameplay_grid[y][x] = 2; // becomes flagged
+                break;
+
+            case 2: // if cell is flagged
+                gameplay_grid[y][x] = 0; // open
+                break;
+        }
     }
+    click_action_count++;
     update_board();
-    // highlightable and clickable and dragable
+
 }
 
-function right_click_action(y, x) {
-    switch (gameplay_grid[y][x]) {
-        case 0: // if cell is closed (and not flagged)
-            gameplay_grid[y][x] = 2; //becomes flagged
-            break;
 
-        case 2: // if cell is flagged
-            gameplay_grid[y][x] = 0; // open
-            break;
-    }
-    update_board();
-    // highlightable and clickable and dragable
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // BOARD REFRESH
-set_random_mines_grid();
-set_numerical_grid();
-set_gameplay_grid();
-set_3bv_grid();
-make_board();
+function refresh_board() {
+    set_random_mines_grid();
+    set_numerical_grid();
+    set_gameplay_grid();
+    set_3bv_grid();
+    make_board();
+    click_action_count = 0;
+}
+refresh_board();
 
-
-console.log(bv3_grid.map(row => row.join(' ')).join('\n'));
 
 
 
@@ -261,16 +273,10 @@ updateMouseCoords();
 requestAnimationFrame(loop)
 
 document.addEventListener('mouseup', (event) => {
-    if (event.button === 0) { 
-       left_click_action(mouse_coords.y,mouse_coords.x);
+       click_action(mouse_coords.y,mouse_coords.x,event.button);
     }
-});
+);
 
-document.addEventListener('mousedown', (event) => {
-    if (event.button === 2) { 
-       right_click_action(mouse_coords.y,mouse_coords.x);
-    }
-});
 
 
 function initialize_visited_grid() {
@@ -292,7 +298,7 @@ function zero_open(y, x) {
             const nx = x + dx;
 
             if (ny >= 0 && ny < cells_y && nx >= 0 && nx < cells_x) {
-                if (!visited_grid[ny][nx] && gameplay_grid[ny][nx] === 0) {
+                if (!visited_grid[ny][nx] && gameplay_grid[ny][nx]  != 1) {
                     zero_open(ny, nx);
                 }
             }
@@ -413,11 +419,20 @@ function get_solved_3bv() {
 
     for (let y = 0; y < cells_y; y++) {
         for (let x = 0; x < cells_x; x++) {
-            if (three_bv_grid[y][x] === 1 && gameplay_grid[y][x] === 1) {
+            if (bv3_grid[y][x] === 1 && gameplay_grid[y][x] === 1) {
                 solvedCount++;
             }
         }
     }
 
     return solvedCount;
+}
+
+function update_text() {
+    const bbbv3_text = document.getElementById('3bv-text');
+    bbbv3_text.textContent = `3BV: ${solved_bv3}/${bv3}`;
+    const ca_text= document.getElementById('ca-text');
+    ca_text.textContent = `Clicks: ${click_action_count}`;
+    const eff_text= document.getElementById('eff-text');
+    eff_text.textContent = `IOE: ${ioe}`;
 }
