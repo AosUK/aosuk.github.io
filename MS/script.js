@@ -1,7 +1,7 @@
 document.body.style.backgroundColor = '#181A1B';
-cells_x =16;
-cells_y = 16;
-mine_count = 40;
+cells_x =9;
+cells_y = 9;
+mine_count = 10;
 cell_size = 25;
 
 
@@ -18,6 +18,10 @@ let bv3;
 let solved_bv3;
 let click_action_count;
 let ioe;
+let ready_to_render;
+let max_board_attempts = 10000;
+let min_bv3;
+let max_bv3;
 
 // Just mine locations, 0 - Safe    1 - Mine
 function set_random_mines_grid() {
@@ -73,7 +77,7 @@ function set_gameplay_grid() {
 
 // set upt the grid html element one time
 function make_board() {
-    board = document.getElementById('grid');
+    board = document.getElementById('board');
     board.innerHTML = '';
 
     board.style.display = 'grid';
@@ -187,12 +191,27 @@ function click_action(y, x, actionType) {
 
 // BOARD REFRESH
 function refresh_board() {
-    set_random_mines_grid();
-    set_numerical_grid();
-    set_gameplay_grid();
-    set_3bv_grid();
+    [cells_x, cells_y, mine_count] = readBoardSize();
+    [min_bv3, max_bv3] = readBV3Range();
+    console.log(min_bv3);
+    ready_to_render = false;
+    let ready = false
+    let attempts = 0; 
+    while (ready!=true && attempts < max_board_attempts){
+        set_random_mines_grid();
+        set_numerical_grid();
+        set_gameplay_grid();
+        set_3bv_grid();
+        click_action_count = 0;
+        if (bv3 >= min_bv3 && bv3 <= max_bv3){
+            ready = true;
+        }
+        attempts++;
+    }
     make_board();
-    click_action_count = 0;
+    ready_to_render=true;
+    update_board();
+    
 }
 refresh_board();
 
@@ -266,10 +285,10 @@ function mouseOnNumber() {
 
 
 function loop() {
-    // Your code to run every frame goes here
-    update_board()
+    if (ready_to_render===true){
+        update_board();
+    }
 
-    // Request the next frame
     requestAnimationFrame(loop);
 }
 
@@ -451,5 +470,62 @@ function open_all_openings() {
     }
     update_board();
 }
+
+function open_board(){
+    for (let y = 0; y < numerical_grid.length; y++) {
+        for (let x = 0; x < numerical_grid[y].length; x++) {
+            gameplay_grid[y][x] = 1;
+            if (mine_grid[y][x] ===1){
+                gameplay_grid[y][x] = 2;
+            }
+
+        }
+    }
+    click_action_count = bv3;
+    update_board();
+}
+
+function close_board(){
+    for (let y = 0; y < numerical_grid.length; y++) {
+        for (let x = 0; x < numerical_grid[y].length; x++) {
+            gameplay_grid[y][x] = 0;
+        }
+    }
+    click_action_count = 0;
+    update_board();
+}
 document.getElementById('all-openings-btn').addEventListener('click', open_all_openings);
 document.getElementById('reset-btn').addEventListener('click', refresh_board);
+document.getElementById('open-board-btn').addEventListener('click', open_board);
+document.getElementById('close-board-btn').addEventListener('click', close_board);
+
+
+
+function readBoardSize() {
+    const input = document.getElementById("board-size-in").value;
+    const defaultValues = [16, 16, 40];
+    const parsedValues = input.split(",").map(Number);
+    if (
+        parsedValues.length === 3 &&
+        parsedValues.every(value => Number.isInteger(value) && value > 0)
+    ) {
+        return parsedValues; 
+    }
+
+    return defaultValues; 
+}
+
+function readBV3Range() {
+    const input = document.getElementById("bv3-range-in").value;
+    const defaultValues = [1, 1000];
+    const parsedValues = input.split(",").map(Number);
+    if (
+        parsedValues.length === 2 &&
+        parsedValues.every(value => Number.isInteger(value) && value >= 0) &&
+        parsedValues[0] <= parsedValues[1]
+    ) {
+        return parsedValues;
+    }
+
+    return defaultValues; 
+}
