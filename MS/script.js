@@ -497,6 +497,7 @@ document.getElementById('all-openings-btn').addEventListener('click', open_all_o
 document.getElementById('reset-btn').addEventListener('click', refresh_board);
 document.getElementById('open-board-btn').addEventListener('click', open_board);
 document.getElementById('close-board-btn').addEventListener('click', close_board);
+document.getElementById('share-btn').addEventListener('click', handle_codes);
 
 
 
@@ -513,8 +514,14 @@ function readBoardSize() {
         const height = Math.min(parsedValues[1], 99);
         const mineCount = parsedValues[2];
 
+        cells_x = width;
+        cells_y = height;
+        mine_count = mineCount;
         return [width, height, mineCount]; 
     }
+    cells_x = defaultValues[0];
+    cells_y = defaultValues[1];
+    mine_count = defaultValues[2];
     return defaultValues; 
 }
 
@@ -561,4 +568,42 @@ function toggle_mine(y, x) {
     set_numerical_grid();
     set_3bv_grid()
     update_board();
+}
+
+
+function exportToCode() {
+    const mineString = mine_grid.flat().join(""); 
+    return `${cells_x}/${cells_y}/${mineString}`;
+}
+
+function importFromCode(code) {
+    const [width, height, mineString] = code.split("/").map((item, index) => 
+        index < 2 ? parseInt(item) : item
+    );
+
+    if (!width || !height || !mineString || mineString.length !== width * height) {
+        console.error("Invalid code format");
+        return;
+    }
+    cells_x = width;
+    cells_y = height;
+    console.log(cells_x);
+    mine_grid = [];
+    for (let y = 0; y < cells_y; y++) {
+        const row = mineString.slice(y * cells_x, (y + 1) * cells_x).split("").map(Number);
+        mine_grid.push(row);
+    }
+    // Should really be one function, was refresh_board but decided to corrupt that.
+    set_numerical_grid();
+    set_gameplay_grid();
+    set_3bv_grid();
+    make_board();
+    close_board();
+    update_board();
+}
+
+function handle_codes() {
+    const currentCode = exportToCode();
+    const userCode = prompt("Your code: (Paste code here to import)", currentCode);
+    importFromCode(userCode);
 }
