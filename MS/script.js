@@ -24,6 +24,7 @@ let min_bv3;
 let max_bv3;
 let opening_count_map = {};
 let bv3_count_map = {};
+let highlight_openings = true; 
 
 // Just mine locations, 0 - Safe    1 - Mine
 function set_random_mines_grid() {
@@ -109,7 +110,11 @@ function get_texture_from_coord(y, x) {
         if (isMouseDown && mouse_coords.x==x && mouse_coords.y==y){
             return "0.png";
         } else {
-            return "closed.png";
+            if (highlight_openings==true && gameplay_grid[y][x]==0 && numerical_grid[y][x]==0){
+                return "closed_hl_green.png";
+            } else {
+                return "closed.png";
+            }
         }
     }
 
@@ -528,6 +533,7 @@ document.getElementById('open-board-btn').addEventListener('click', open_board);
 document.getElementById('close-board-btn').addEventListener('click', close_board);
 document.getElementById('share-btn').addEventListener('click', handle_codes);
 document.getElementById('sequence-btn').addEventListener('click', user_sequence);
+document.getElementById('toggle-open-btn').addEventListener('click', toggle_highlight_openings);
 
 
 
@@ -586,8 +592,14 @@ document.addEventListener("keydown", function(event) {
     if (event.key === "z" || event.key === "Z") { 
         toggle_mine(mouse_coords.y,mouse_coords.x);
     }
+    if (event.key === "q" || event.key === "Q") { 
+        toggle_highlight_openings();
+    }
 });
 
+function toggle_highlight_openings(){
+    highlight_openings = !highlight_openings;
+}
 function toggle_mine(y, x) {
     if (x === null) {
         return;
