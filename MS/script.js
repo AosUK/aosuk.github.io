@@ -297,10 +297,36 @@ updateMouseCoords();
 requestAnimationFrame(loop)
 
 document.addEventListener('mouseup', (event) => {
-       click_action(mouse_coords.y,mouse_coords.x,event.button);
+    if (event.button==0){
+        click_action(mouse_coords.y,mouse_coords.x,0);
     }
+}
 );
 
+document.addEventListener('mousedown', (event) => {
+    if (event.button==2){
+        click_action(mouse_coords.y,mouse_coords.x,2);
+    }
+    if (event.button==1){
+        event.preventDefault();
+        refresh_board();
+    }
+}
+);
+
+document.addEventListener('keyup', (event) => {
+    if (event.key=='m' || event.key=='M'){
+        click_action(mouse_coords.y,mouse_coords.x,0);
+    }
+}
+);
+
+document.addEventListener('keydown', (event) => {
+    if (event.key=='j' || event.key=='J'){
+        click_action(mouse_coords.y,mouse_coords.x,2);
+    }
+}
+);
 
 
 function initialize_visited_grid() {
@@ -557,7 +583,7 @@ document.addEventListener("keydown", function(event) {
     if (event.key === "v" || event.key === "V") { 
         open_board(); 
     }
-    if (event.key === "m" || event.key === "M") { 
+    if (event.key === "z" || event.key === "Z") { 
         toggle_mine(mouse_coords.y,mouse_coords.x);
     }
 });
@@ -632,7 +658,4 @@ function executeActions(actions) {
         update_board();
     });
 }
-
-const actions = "L(3,0)/L(0,1)/R(1,1)/L(0,1)/L(2,2)/L(1,3)/L(3,3)";
-executeActions(actions);
 
