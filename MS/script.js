@@ -22,6 +22,8 @@ let ready_to_render;
 let max_board_attempts = 10000;
 let min_bv3;
 let max_bv3;
+let opening_count_map = {};
+let bv3_count_map = {};
 
 // Just mine locations, 0 - Safe    1 - Mine
 function set_random_mines_grid() {
@@ -467,8 +469,9 @@ function open_all_openings() {
             }
         }
     }
-    update_board();
+
 }
+
 
 function open_board(){
     for (let y = 0; y < numerical_grid.length; y++) {
@@ -498,6 +501,7 @@ document.getElementById('reset-btn').addEventListener('click', refresh_board);
 document.getElementById('open-board-btn').addEventListener('click', open_board);
 document.getElementById('close-board-btn').addEventListener('click', close_board);
 document.getElementById('share-btn').addEventListener('click', handle_codes);
+document.getElementById('sequence-btn').addEventListener('click', user_sequence);
 
 
 
@@ -607,3 +611,28 @@ function handle_codes() {
     const userCode = prompt("Your code: (Paste code here to import)", currentCode);
     importFromCode(userCode);
 }
+
+function user_sequence() {;
+    const moves = prompt("Sequence (example: L(3,0)/L(0,1)/R(1,1)/L(0,1) )");
+    executeActions(moves)
+}
+
+function executeActions(actions) {
+
+    const actionList = actions.split("/");
+
+    
+    actionList.forEach(action => {
+        const actionType = action.charAt(0) === 'L' ? 0 : (action.charAt(0) === 'R' ? 2 : -1);
+
+        const coords = action.slice(2, -1).split(",");
+        const y = parseInt(coords[1]);
+        const x = parseInt(coords[0]);
+        click_action(y, x, actionType);
+        update_board();
+    });
+}
+
+const actions = "L(3,0)/L(0,1)/R(1,1)/L(0,1)/L(2,2)/L(1,3)/L(3,3)";
+executeActions(actions);
+
