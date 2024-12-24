@@ -1,0 +1,29 @@
+
+
+data structure thing: 
+    Set of closed cells, with 2 values, a max and min number of mines in it
+
+
+
+begin with a set for each numbered cell:
+    a '4' with 6 closed cells around it would create a set of those 6 cells
+    both the max and min values are set to 4 since the number tells us this exactly.
+
+
+the goal:
+    reduce / split these sets to have either:
+        the min number of mines be equal to the number of cells: they are all mines
+        the max number of mines be 0: they are all safe
+
+
+
+for every set:   
+    compare with every other set:      lets label them A and be
+        if B is a subset of A  (test if intersection is equal size to B)
+        then we can split A into 2 sets
+        1, B: we already have this so it is deleted
+        2, the cells not in B:
+            every mine that we knew for sure was in B can not be in this new set
+            therefore:         
+
+
