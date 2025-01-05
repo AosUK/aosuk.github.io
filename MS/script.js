@@ -25,6 +25,10 @@ let max_bv3;
 let opening_count_map = {};
 let bv3_count_map = {};
 let highlight_openings = true; 
+let show_hints = false; 
+let solver_groups = [];
+let safeCells = [];
+let mineCells = [];
 
 // Just mine locations, 0 - Safe    1 - Mine
 function set_random_mines_grid() {
@@ -106,17 +110,34 @@ function get_texture_from_coord(y, x) {
     let gp = gameplay_grid[y][x];
     let nm = numerical_grid[y][x];
 
-    if (gp === 0) { //if the cell is closed
-        if (isMouseDown && mouse_coords.x==x && mouse_coords.y==y){
-            return "0.png";
+    if (gp === 0) { // if the cell is closed
+        if (isMouseDown && mouse_coords.x == x && mouse_coords.y == y) {
+            return "0.png"; // Show a different image when mouse is down on the cell
         } else {
-            if (highlight_openings==true && gameplay_grid[y][x]==0 && numerical_grid[y][x]==0){
-                return "closed_hl_green.png";
+            // Check if we need to highlight the openings
+            if (highlight_openings == true && gameplay_grid[y][x] == 0 && numerical_grid[y][x] == 0) {
+                return "closed_hl_blue.png"; // Highlight the closed cells in green
             } else {
-                return "closed.png";
+                // Check if the cell is in the safeCells or mineCells array
+                var cellInSafe = safeCells.some(function(cell) {
+                    return cell.x === x && cell.y === y;
+                });
+    
+                var cellInMine = mineCells.some(function(cell) {
+                    return cell.x === x && cell.y === y;
+                });
+    
+                if (cellInSafe) {
+                    return "closed_hl_green.png"; // If cell is in safeCells, highlight in green
+                } else if (cellInMine) {
+                    return "closed_hl_red.png"; // If cell is in mineCells, highlight in red
+                } else {
+                    return "closed.png"; // Default image for closed cells
+                }
             }
         }
     }
+    
 
 
     if (gp === 1) {
@@ -595,6 +616,15 @@ document.addEventListener("keydown", function(event) {
     if (event.key === "q" || event.key === "Q") { 
         toggle_highlight_openings();
     }
+    if (event.key === "k" || event.key === "K") { //testing
+        setup_groups();
+        console.log(solver_groups);
+        solver_group_iterate();
+        solver_group_iterate();
+        solver_group_iterate();
+        console.log(solver_groups);
+        setKnownMinesAndSafe();
+    }
 });
 
 function toggle_highlight_openings(){
@@ -669,5 +699,145 @@ function executeActions(actions) {
         click_action(y, x, actionType);
         update_board();
     });
+}
+
+
+///////////////////////////////////////
+
+function setup_groups() {
+    solver_groups.length = 0;
+
+    for (var row = 0; row < cells_y; row++) {
+        for (var col = 0; col < cells_x; col++) {
+            var num = numerical_grid[row][col];
+
+           
+            if (num > 0 && gameplay_grid[row][col] === 1) {
+                var groupCells = new Set();
+
+          
+                for (var r = row - 1; r <= row + 1; r++) {
+                    for (var c = col - 1; c <= col + 1; c++) {
+                        if (
+                            r >= 0 && r < cells_y && 
+                            c >= 0 && c < cells_x && 
+                            !(r === row && c === col) && 
+                            gameplay_grid[r][c] !== 1 
+                        ) {
+                            groupCells.add({ x: c, y: r });
+                        }
+                    }
+                }
+
+                if (groupCells.size > 0) {
+                    solver_groups.push({
+                        cells: groupCells,
+                        min: num,
+                        max: num
+                    });
+                }
+            }
+        }
+    }
+}
+
+
+
+
+function setKnownMinesAndSafe() {
+    safeCells.length = 0;
+    mineCells.length = 0;
+
+    for (var i = 0; i < solver_groups.length; i++) {
+        var group = solver_groups[i];
+
+        if (group.max === 0) {
+            group.cells.forEach(function(cell) {
+                safeCells.push(cell);
+            });
+        }
+        else if (group.min === group.cells.size) {
+            group.cells.forEach(function(cell) {
+                mineCells.push(cell);
+            });
+        }
+    }
+}
+
+function add_group(newSet, existingSets) {
+    if (newSet.cells.size === 0) return;
+
+    for (let existingSet of existingSets) {
+        if (newSet.cells.size === existingSet.cells.size &&
+            [...newSet.cells].every(newCell => 
+                [...existingSet.cells].some(existingCell => 
+                    newCell.x === existingCell.x && newCell.y === existingCell.y
+                )
+            )) {
+            existingSet.min = Math.max(existingSet.min, newSet.min);
+            existingSet.max = Math.min(existingSet.max, newSet.max); 
+            return; 
+        }
+    }
+
+    existingSets.push(newSet);
+}
+
+
+
+function solver_group_iterate() {
+    let newGroups = [];
+
+    for (let i = 0; i < solver_groups.length; i++) {
+        for (let j = i + 1; j < solver_groups.length; j++) {
+            let groupA = solver_groups[i];
+            let groupB = solver_groups[j];
+
+            let originalMinA = groupA.min;
+            let originalMaxA = groupA.max;
+            let originalMinB = groupB.min;
+            let originalMaxB = groupB.max;
+
+            let intersection = new Set([...groupA.cells].filter(cell =>
+                [...groupB.cells].some(bCell => cell.x === bCell.x && cell.y === bCell.y)
+            ));
+
+            let cutA = new Set([...groupA.cells].filter(cell =>
+                ![...intersection].some(intersectCell => cell.x === intersectCell.x && cell.y === intersectCell.y)
+            ));
+
+            let cutB = new Set([...groupB.cells].filter(cell =>
+                ![...intersection].some(intersectCell => cell.x === intersectCell.x && cell.y === intersectCell.y)
+            ));
+
+
+            let intersectionGroup = {
+                cells: intersection,
+                min: Math.max(0, Math.max(originalMinA - cutA.size, originalMinB - cutB.size)),
+                max: Math.min(originalMaxA, originalMaxB)
+            };
+
+            let cutAGroup = cutA.size > 0 ? {
+                cells: cutA,
+                min: Math.max(0, originalMinA - intersectionGroup.max),
+                max: Math.min(8, originalMaxA - intersectionGroup.min)
+            } : null;
+
+            let cutBGroup = cutB.size > 0 ? {
+                cells: cutB,
+                min: Math.max(0, originalMinB - intersectionGroup.max),
+                max: Math.min(8, originalMaxB - intersectionGroup.min)
+            } : null;
+
+            add_group(intersectionGroup, newGroups);
+            if (cutAGroup) add_group(cutAGroup, newGroups);
+            if (cutBGroup) add_group(cutBGroup, newGroups);
+        }
+    }
+
+    solver_groups = [];
+    for (let newGroup of newGroups) {
+        add_group(newGroup, solver_groups);
+    }
 }
 
