@@ -1,7 +1,7 @@
 document.body.style.backgroundColor = '#181A1B';
 cells_x =9;
 cells_y = 9;
-mine_count = 10;
+mine_count = 1;
 cell_size = 25;
 
 
@@ -24,11 +24,12 @@ let min_bv3;
 let max_bv3;
 let opening_count_map = {};
 let bv3_count_map = {};
-let highlight_openings = true; 
+let highlight_openings = false; 
 let show_hints = false; 
 let solver_groups = [];
 let safeCells = [];
 let mineCells = [];
+let markers = {};
 
 // Just mine locations, 0 - Safe    1 - Mine
 function set_random_mines_grid() {
@@ -110,6 +111,20 @@ function get_texture_from_coord(y, x) {
     let gp = gameplay_grid[y][x];
     let nm = numerical_grid[y][x];
 
+    //marked cells have priority over all
+    const key = `${x},${y}`; // Generate the cell key
+    const marker = markers[key]; // Check for marker
+     // Markers have priority
+     if (marker !== undefined) {
+        switch (marker) {
+            case 1: return "closed_hl_blue.png";
+            case 2: return "closed_hl_green.png";
+            case 3: return "closed_hl_yellow.png";
+            case 4: return "closed_hl_red.png";
+            default: break; // Fallback if marker is outside expected range
+        }
+    }
+
     if (gp === 0) { // if the cell is closed
         if (isMouseDown && mouse_coords.x == x && mouse_coords.y == y) {
             return "0.png"; // Show a different image when mouse is down on the cell
@@ -172,6 +187,7 @@ function update_board() {
     } else {ioe = solved_bv3/click_action_count;}
     ioe = Math.round(ioe * 100) / 100;
     update_text();
+    
 }
 
 function click_action(y, x, actionType) {
@@ -226,8 +242,8 @@ function refresh_board() {
     let attempts = 0; 
     while (ready!=true && attempts < max_board_attempts){
         set_random_mines_grid();
-        set_numerical_grid();
         set_gameplay_grid();
+        set_numerical_grid();
         set_3bv_grid();
         click_action_count = 0;
         if (bv3 >= min_bv3 && bv3 <= max_bv3){
@@ -238,9 +254,12 @@ function refresh_board() {
     make_board();
     ready_to_render=true;
     update_board();
+    setup_groups();
+    setKnownMinesAndSafe();
     
 }
 refresh_board();
+
 
 
 
@@ -547,6 +566,8 @@ function close_board(){
     }
     click_action_count = 0;
     update_board();
+    setup_groups();
+    setKnownMinesAndSafe();
 }
 document.getElementById('all-openings-btn').addEventListener('click', open_all_openings);
 document.getElementById('reset-btn').addEventListener('click', refresh_board);
@@ -617,13 +638,24 @@ document.addEventListener("keydown", function(event) {
         toggle_highlight_openings();
     }
     if (event.key === "k" || event.key === "K") { //testing
+        // add proper function and option to do this constantly?
         setup_groups();
-        console.log(solver_groups);
+        //console.log(solver_groups);
         solver_group_iterate();
         solver_group_iterate();
         solver_group_iterate();
-        console.log(solver_groups);
+        //console.log(solver_groups);
         setKnownMinesAndSafe();
+    }
+    if (event.key >= "0" && event.key <= "9") {
+        const markerValue = parseInt(event.key);
+        const key = `${mouse_coords.x},${mouse_coords.y}`; 
+        if (markerValue == markers[key] ) {
+            markers[key] = 0
+        } else {
+            markers[key] = markerValue;
+        }
+
     }
 });
 
@@ -659,7 +691,6 @@ function importFromCode(code) {
     }
     cells_x = width;
     cells_y = height;
-    console.log(cells_x);
     mine_grid = [];
     for (let y = 0; y < cells_y; y++) {
         const row = mineString.slice(y * cells_x, (y + 1) * cells_x).split("").map(Number);
@@ -786,6 +817,7 @@ function add_group(newSet, existingSets) {
 
 
 function solver_group_iterate() {
+    solve_separate();
     let newGroups = [];
 
     for (let i = 0; i < solver_groups.length; i++) {
@@ -810,6 +842,11 @@ function solver_group_iterate() {
                 ![...intersection].some(intersectCell => cell.x === intersectCell.x && cell.y === intersectCell.y)
             ));
 
+            if (intersection.size < 1 || (cutA < 1 && cutB.size<1)){
+                add_group(groupA,newGroups);
+                add_group(groupB,newGroups);
+                continue;
+            }
 
             let intersectionGroup = {
                 cells: intersection,
@@ -841,3 +878,44 @@ function solver_group_iterate() {
     }
 }
 
+function solve_separate() {
+    let newGroups = [];
+
+    for (let i = 0; i < solver_groups.length; i++) {
+        let group = solver_groups[i];
+
+        if (group.max === 0) {
+            for (let cell of group.cells) {
+                newGroups.push({ cells: new Set([cell]), min: 0, max: 0 });
+
+                for (let otherGroup of solver_groups) {
+                    if (otherGroup.cells.size > 1 && otherGroup.cells.has(cell)) {
+                        otherGroup.cells.delete(cell);
+                    }
+                }
+            }
+            continue;
+        }
+
+        if (group.min === group.cells.size) {
+            for (let cell of group.cells) {
+                newGroups.push({ cells: new Set([cell]), min: 1, max: 1 });
+
+                for (let otherGroup of solver_groups) {
+                    if (otherGroup.cells.size > 1 && otherGroup.cells.has(cell)) {
+                        otherGroup.cells.delete(cell);
+
+                        otherGroup.min = Math.max(0, otherGroup.min - 1);
+                        otherGroup.max = Math.max(0, otherGroup.max - 1);
+                    }
+                }
+            }
+
+            continue;
+        }
+
+        newGroups.push(group);
+    }
+
+    solver_groups = newGroups.filter(group => group.cells.size > 0);
+}
