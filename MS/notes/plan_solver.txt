@@ -18,12 +18,52 @@ the goal:
 
 
 for every set:   
-    compare with every other set:      lets label them A and be
-        if B is a subset of A  (test if intersection is equal size to B)
-        then we can split A into 2 sets
-        1, B: we already have this so it is deleted
-        2, the cells not in B:
-            every mine that we knew for sure was in B can not be in this new set
-            therefore:         
+    for every other set:      lets label them A and B 
 
+        note every time we update max or min we want to check we dont lose info
+        the max cant increase and the min cant decrease, all values must be between 0 and 8
+
+        consider 3 sets from this:
+            the intersection, cells in both
+            the 2 original sets subtract this intersection - lets call them cut sets
+
+
+        min and max of cut sets to be their original big sets values
+        intersections min to be 0 and max to be 8
+        ###
+
+        calculate improved min for intersection:
+            for each cut set, take the number of cells it has,
+                from this, subtract its min, the result is the number of mines it is 
+                forcing into the intersection
+                so do this calculation for both the cut sets, the LARGER one is the min of intersection
+
+        improve max for cut sets:
+            take the max of the original big set, from this, subtract the min of the intersection
+            the result is the most (max) mines that can be in that cut set, update its max
+
+        improved max for intersection:
+            the smaller of the 2 maxs from each of the original sets
+
+        improved min for cut set
+            for each original set:
+                take its min number of mines, from this, subtract the max of the intersection
+                this becomes the cut sets minimum
+
+        again, NEED checks that these values do not go below 0 or above 8
+
+
+
+
+            
+
+        
+
+        
+
+
+
+
+        
+        
 
