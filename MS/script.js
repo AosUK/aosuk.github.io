@@ -29,6 +29,8 @@ let show_hints = false;
 let solver_groups = [];
 let safeCells = [];
 let mineCells = [];
+let knownNumericalCells = [];
+let known3bvCells = [];
 let markers = {};
 
 // Just mine locations, 0 - Safe    1 - Mine
@@ -131,27 +133,30 @@ function get_texture_from_coord(y, x) {
         } else {
             // Check if we need to highlight the openings
             if (highlight_openings == true && gameplay_grid[y][x] == 0 && numerical_grid[y][x] == 0) {
-                return "closed_hl_blue.png"; // Highlight the closed cells in green
+                return "closed_hl_blue.png"; // Highlight the closed cells in blue
             } else {
                 // Check if the cell is in the safeCells or mineCells array
-                var cellInSafe = safeCells.some(function(cell) {
-                    return cell.x === x && cell.y === y;
-                });
-    
-                var cellInMine = mineCells.some(function(cell) {
-                    return cell.x === x && cell.y === y;
-                });
-    
+                var cellInSafe = safeCells.some(cell => cell.x === x && cell.y === y);
+                var cellInMine = mineCells.some(cell => cell.x === x && cell.y === y);
+                var cellIn3BV = known3bvCells.some(cell => cell.x === x && cell.y === y);
+                if (cellIn3BV && cellInSafe) {
+                    return "closed_hl_yellow.png"; // Highlight 3BV cells in yellow
+                } 
+            
                 if (cellInSafe) {
                     return "closed_hl_green.png"; // If cell is in safeCells, highlight in green
                 } else if (cellInMine) {
                     return "closed_hl_red.png"; // If cell is in mineCells, highlight in red
-                } else {
-                    return "closed.png"; // Default image for closed cells
-                }
+                } 
+            
+        
+            
+                return "closed.png"; // Default image for closed cells
             }
+                            
         }
     }
+
     
 
 
@@ -644,8 +649,12 @@ document.addEventListener("keydown", function(event) {
         solver_group_iterate();
         solver_group_iterate();
         solver_group_iterate();
+        solver_group_iterate();
+        solver_group_iterate();
         //console.log(solver_groups);
         setKnownMinesAndSafe();
+        set_know_numerical_cells();
+        set_known_3bv_cells();
     }
     if (event.key >= "0" && event.key <= "9") {
         const markerValue = parseInt(event.key);
@@ -742,11 +751,9 @@ function setup_groups() {
         for (var col = 0; col < cells_x; col++) {
             var num = numerical_grid[row][col];
 
-           
             if (num > 0 && gameplay_grid[row][col] === 1) {
                 var groupCells = new Set();
 
-          
                 for (var r = row - 1; r <= row + 1; r++) {
                     for (var c = col - 1; c <= col + 1; c++) {
                         if (
@@ -768,6 +775,14 @@ function setup_groups() {
                     });
                 }
             }
+            
+            if (gameplay_grid[row][col] === 2) {
+                solver_groups.push({
+                    cells: new Set([{ x: col, y: row }]),
+                    min: 1,
+                    max: 1
+                });
+            }
         }
     }
 }
@@ -778,6 +793,7 @@ function setup_groups() {
 function setKnownMinesAndSafe() {
     safeCells.length = 0;
     mineCells.length = 0;
+    known3bvCells.length = 0;
 
     for (var i = 0; i < solver_groups.length; i++) {
         var group = solver_groups[i];
@@ -919,3 +935,63 @@ function solve_separate() {
 
     solver_groups = newGroups.filter(group => group.cells.size > 0);
 }
+
+
+
+function set_know_numerical_cells() {
+    knownNumericalCells.length = 0; 
+
+    mineCells.forEach(mine => {
+        let { x, y } = mine;
+
+    
+        for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+
+                let nx = x + dx;
+                let ny = y + dy;
+
+                if (nx >= 0 && nx < cells_x && ny >= 0 && ny < cells_y) {
+                    knownNumericalCells.push({ x: nx, y: ny });               
+                }
+            }
+        }
+    });
+}
+
+
+
+function set_known_3bv_cells() {
+    known3bvCells.length = 0; 
+
+    knownNumericalCells.forEach(cell => {
+        let { x, y } = cell;
+        let is3BV = true;
+
+        for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -1; dy <= 1; dy++) {
+                if (dx === 0 && dy === 0) continue; 
+
+                let nx = x + dx;
+                let ny = y + dy;
+
+            
+                if (nx >= 0 && nx < cells_x && ny >= 0 && ny < cells_y) {
+            
+                    if (!knownNumericalCells.some(nc => nc.x === nx && nc.y === ny)) {
+                        is3BV = false;
+                        break;
+                    }
+                }
+            }
+            if (!is3BV) break; 
+        }
+
+        
+        if (is3BV) {
+            known3bvCells.push(cell);
+        }
+    });
+}
+
+
