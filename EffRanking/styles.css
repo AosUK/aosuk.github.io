@@ -1,0 +1,55 @@
+:root {
+  --black: #000000;
+  --vdarkgray: #1d1a1c;
+  --darkgray: #2c2c2e;
+  --midgray: #5f5f66;
+  --lightgray: #9f9fae;
+  --cream: #f4eade;
+  --green: #7fd87f;
+  --yellow: #dfe38c;
+  --blue: #83afdf;
+  --red: #df8e83;
+}
+
+body {
+  background-color: var(--darkgray);
+  color:var(--cream);  
+  font-family: Verdana, sans-serif;
+}
+
+
+p,h1 {
+  font-size: 50px;
+  margin-left: 30px;
+  font-weight: 1000;
+}
+
+p {
+  padding-top: 10px;
+  font-size: 20px;
+  border-top: 8px solid var(--vdarkgray);
+}
+
+* {
+  user-select: none;
+}
+
+a {
+  color: var(--blue);
+}
+
+table{
+  margin-left: 50px;
+  margin-top: 10px;
+  margin-bottom: 50px;
+}
+
+#filter-info, #remove-filters, #next-mode {
+    margin-left: 50px;
+    margin-top:10px;
+}
+
+#game-list td {
+  width: 130px;
+  text-align: center;
+}
