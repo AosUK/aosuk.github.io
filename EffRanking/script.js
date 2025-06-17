@@ -2,7 +2,9 @@ const playersJSON = `
 [
     { "id": 1, "name": "Player" },
     { "id": 19938283, "name": "A-O-S" },
-    { "id": 2150671, "name": "HC" }
+    { "id": 2150671, "name": "HC" },
+    { "id": 8146485, "name": "Cachow" }
+
 ]
 `;
 
@@ -40,7 +42,26 @@ const gamesJSON = `
     { "id": 4713331086, "mode": 1, "playerid": 19938283, "3bv": 9, "clicks": 4 },
     { "id": 4383375566, "mode": 2, "playerid": 19938283, "3bv": 87, "clicks": 55 },
     { "id": 4626713003, "mode": 2, "playerid": 19938283, "3bv": 78, "clicks": 50 },
-    { "id": 3818921625, "mode": 3, "playerid": 19938283, "3bv": 163, "clicks": 141 }
+    { "id": 3818921625, "mode": 3, "playerid": 19938283, "3bv": 163, "clicks": 141 },
+    { "id": 1578361577, "mode": 1, "playerid": 8146485, "3bv": 17, "clicks": 7 },
+    { "id": 3137261850, "mode": 1, "playerid": 8146485, "3bv": 21, "clicks": 9 },
+    { "id": 2698767704, "mode": 1, "playerid": 8146485, "3bv": 20, "clicks": 9 },
+    { "id": 3077289780, "mode": 1, "playerid": 8146485, "3bv": 24, "clicks": 11 },
+    { "id": 4093004920, "mode": 1, "playerid": 8146485, "3bv": 26, "clicks": 12 },
+    { "id": 2574347450, "mode": 1, "playerid": 8146485, "3bv": 15, "clicks": 7 },
+    { "id": 2524984870, "mode": 1, "playerid": 8146485, "3bv": 15, "clicks": 7 },
+    { "id": 3149487353, "mode": 1, "playerid": 8146485, "3bv": 32, "clicks": 15 },
+    { "id": 3134109637, "mode": 1, "playerid": 8146485, "3bv": 32, "clicks": 15 },
+    { "id": 3025618045, "mode": 1, "playerid": 8146485, "3bv": 17, "clicks": 8 },
+    { "id": 2208507453, "mode": 1, "playerid": 8146485, "3bv": 17, "clicks": 8 },
+    { "id": 2302860293, "mode": 1, "playerid": 8146485, "3bv": 19, "clicks": 9 },
+    { "id": 2703706523, "mode": 1, "playerid": 8146485, "3bv": 21, "clicks": 10 },
+    { "id": 2693148822, "mode": 1, "playerid": 8146485, "3bv": 21, "clicks": 10 },
+    { "id": 2003458106, "mode": 1, "playerid": 8146485, "3bv": 21, "clicks": 10 },
+    { "id": 1575762263, "mode": 1, "playerid": 8146485, "3bv": 21, "clicks": 10 },
+    { "id": 3118940303, "mode": 1, "playerid": 8146485, "3bv": 31, "clicks": 15 },
+    { "id": 3553799116, "mode": 1, "playerid": 8146485, "3bv": 29, "clicks": 14 },
+    { "id": 3099325364, "mode": 1, "playerid": 8146485, "3bv": 39, "clicks": 19 }   
 ]
 `;
 
