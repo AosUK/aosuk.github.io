@@ -1,3 +1,17 @@
+const modesJSON = `
+{
+    "1": "Beginner",
+    "2": "Intermediate",
+    "3": "Expert"
+}
+`;
+
+const modeColorMap = {
+  1: 'green',
+  2: 'blue',
+  3: 'red'
+};//maybe move this into modejson
+
 const playersJSON = `
 [
     { "id": 1, "name": "Player" },
@@ -65,13 +79,6 @@ const gamesJSON = `
 ]
 `;
 
-const modesJSON = `
-{
-    "1": "Beginner",
-    "2": "Intermediate",
-    "3": "Expert"
-}
-`;
 
 const players = JSON.parse(playersJSON);
 const games = JSON.parse(gamesJSON);
@@ -158,17 +165,19 @@ const uniqueGames = Array.from(uniqueGamesMap.values());
   uniqueGames.forEach(game => {
     const playerName = playerMap[game.playerid] || 'Unknown';
     const modeName = modes[game.mode] || 'Unknown';
+    const modeColor = modeColorMap[game.mode] || 'black';
     const efficiency = Math.round((game["3bv"] / game.clicks) * 100);
     const gameUrl = `https://minesweeper.online/game/${game.id}`;
 
     const row = document.createElement('tr');
     row.innerHTML = `
       <td><a href="#" class="player-link" data-playerid="${game.playerid}">${playerName}</a></td>
-      <td>${efficiency}%</td>
+      <td><a href="${gameUrl}" class="efficiency-text" target="_blank" rel="noopener noreferrer">${efficiency}%</a></td>
       <td>${game["3bv"]}</td>
       <td>${game.clicks}</td>
-      <td>${modeName}</td>
-      <td><a href="${gameUrl}" target="_blank" rel="noopener noreferrer">Click</a></td>
+        <td>
+        <span style="color: var(--${modeColor});">${modeName}</span>
+        </td>
     `;
     tableBody.appendChild(row);
   });

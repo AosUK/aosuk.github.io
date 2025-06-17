@@ -5,10 +5,11 @@
   --midgray: #5f5f66;
   --lightgray: #9f9fae;
   --cream: #f4eade;
-  --green: #7fd87f;
-  --yellow: #dfe38c;
-  --blue: #83afdf;
-  --red: #df8e83;
+  --creamblue: #e1def4;
+  --green: #9cff9c;
+  --yellow: #f7fca7;
+  --blue: #a7d1ff;
+  --red: #ffa2a2;
 }
 
 body {
@@ -28,6 +29,7 @@ p {
   padding-top: 10px;
   font-size: 20px;
   border-top: 8px solid var(--vdarkgray);
+  font-weight: 100;
 }
 
 * {
@@ -35,7 +37,8 @@ p {
 }
 
 a {
-  color: var(--blue);
+  color: var(--yellow);
+  text-decoration: none;
 }
 
 table{
@@ -47,9 +50,19 @@ table{
 #filter-info, #remove-filters, #next-mode {
     margin-left: 50px;
     margin-top:10px;
+    font-weight: 1000;
 }
 
 #game-list td {
   width: 130px;
   text-align: center;
+}
+
+.player-link {
+    font-weight: 1000;
+}
+
+.efficiency-text {
+    color: var(--creamblue);
+    font-weight: 200;
 }
