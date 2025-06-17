@@ -9,7 +9,8 @@ const modesJSON = `
 const modeColorMap = {
   1: 'green',
   2: 'blue',
-  3: 'red'
+  3: 'red',
+  0: 'cream'
 };//maybe move this into modejson
 
 const playersJSON = `
@@ -17,14 +18,16 @@ const playersJSON = `
     { "id": 1, "name": "Player" },
     { "id": 19938283, "name": "A-O-S" },
     { "id": 2150671, "name": "HC" },
-    { "id": 8146485, "name": "Cachow" }
+    { "id": 8146485, "name": "Cachow" },
+    { "id": 733893, "name": "Llama" }
+     
 
 ]
 `;
 
 const gamesJSON = `
 [
-    { "id": 1, "mode": 1, "playerid": 1, "3bv": 1, "clicks": 1 },
+    { "id": 1, "mode": 0, "playerid": 1, "3bv": 1, "clicks": 100 },
     { "id": 4688359230, "mode": 1, "playerid": 2150671, "3bv": 43, "clicks": 21 },
     { "id": 565781171, "mode": 1, "playerid": 2150671, "3bv": 25, "clicks": 11 },
     { "id": 1334361570, "mode": 1, "playerid": 2150671, "3bv": 34, "clicks": 15 },
@@ -75,7 +78,78 @@ const gamesJSON = `
     { "id": 1575762263, "mode": 1, "playerid": 8146485, "3bv": 21, "clicks": 10 },
     { "id": 3118940303, "mode": 1, "playerid": 8146485, "3bv": 31, "clicks": 15 },
     { "id": 3553799116, "mode": 1, "playerid": 8146485, "3bv": 29, "clicks": 14 },
-    { "id": 3099325364, "mode": 1, "playerid": 8146485, "3bv": 39, "clicks": 19 }   
+    { "id": 3099325364, "mode": 1, "playerid": 8146485, "3bv": 39, "clicks": 19 },  
+    { "id": 4116811644, "mode": 1, "playerid": 733893, "3bv": 31, "clicks": 12 },
+    { "id": 3306358669, "mode": 1, "playerid": 733893, "3bv": 27, "clicks": 12 },
+    { "id": 4623358397, "mode": 1, "playerid": 733893, "3bv": 29, "clicks": 13 },
+    { "id": 4081965155, "mode": 1, "playerid": 733893, "3bv": 29, "clicks": 13 },
+    { "id": 4721151080, "mode": 1, "playerid": 733893, "3bv": 13, "clicks": 6 },
+    { "id": 3281013514, "mode": 1, "playerid": 733893, "3bv": 13, "clicks": 6 },
+    { "id": 4714607778, "mode": 1, "playerid": 733893, "3bv": 28, "clicks": 13 },
+    { "id": 4046203684, "mode": 1, "playerid": 733893, "3bv": 28, "clicks": 13 },
+    { "id": 1689049605, "mode": 1, "playerid": 733893, "3bv": 28, "clicks": 13 },
+    { "id": 4724860008, "mode": 1, "playerid": 733893, "3bv": 17, "clicks": 8 },
+    { "id": 4217025886, "mode": 1, "playerid": 733893, "3bv": 17, "clicks": 8 },
+    { "id": 2674528526, "mode": 1, "playerid": 733893, "3bv": 17, "clicks": 8 },
+    { "id": 4721177915, "mode": 1, "playerid": 733893, "3bv": 19, "clicks": 9 },
+    { "id": 3151332197, "mode": 1, "playerid": 733893, "3bv": 19, "clicks": 9 },
+    { "id": 4228430745, "mode": 1, "playerid": 733893, "3bv": 25, "clicks": 12 },
+    { "id": 4063760401, "mode": 1, "playerid": 733893, "3bv": 27, "clicks": 13 },
+    { "id": 4063640964, "mode": 1, "playerid": 733893, "3bv": 27, "clicks": 13 },
+    { "id": 4429772846, "mode": 1, "playerid": 733893, "3bv": 31, "clicks": 15 },
+    { "id": 3296108930, "mode": 1, "playerid": 733893, "3bv": 31, "clicks": 15 },
+    { "id": 4167458152, "mode": 1, "playerid": 733893, "3bv": 33, "clicks": 16 },
+    { "id": 3142351035, "mode": 1, "playerid": 733893, "3bv": 39, "clicks": 19 },
+    { "id": 4724461465, "mode": 1, "playerid": 733893, "3bv": 28, "clicks": 14 },
+    { "id": 4720837080, "mode": 1, "playerid": 733893, "3bv": 34, "clicks": 17 },
+    { "id": 4720271382, "mode": 1, "playerid": 733893, "3bv": 32, "clicks": 16 },
+    { "id": 4720194946, "mode": 1, "playerid": 733893, "3bv": 16, "clicks": 8 },
+    { "id": 4717946486, "mode": 1, "playerid": 733893, "3bv": 16, "clicks": 8 },
+    { "id": 4619888895, "mode": 1, "playerid": 733893, "3bv": 22, "clicks": 11 },
+    { "id": 4619886863, "mode": 1, "playerid": 733893, "3bv": 20, "clicks": 10 },
+    { "id": 4619857990, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 4545862564, "mode": 1, "playerid": 733893, "3bv": 28, "clicks": 14 },
+    { "id": 4545806576, "mode": 1, "playerid": 733893, "3bv": 28, "clicks": 14 },
+    { "id": 4545764642, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 4437280958, "mode": 1, "playerid": 733893, "3bv": 22, "clicks": 11 },
+    { "id": 4363957121, "mode": 1, "playerid": 733893, "3bv": 26, "clicks": 13 },
+    { "id": 4336402330, "mode": 1, "playerid": 733893, "3bv": 38, "clicks": 19 },
+    { "id": 4135569697, "mode": 1, "playerid": 733893, "3bv": 16, "clicks": 8 },
+    { "id": 4069974626, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 4067254524, "mode": 1, "playerid": 733893, "3bv": 18, "clicks": 9 },
+    { "id": 4064279157, "mode": 1, "playerid": 733893, "3bv": 22, "clicks": 11 },
+    { "id": 4063962886, "mode": 1, "playerid": 733893, "3bv": 20, "clicks": 10 },
+    { "id": 4061185279, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 4061099857, "mode": 1, "playerid": 733893, "3bv": 22, "clicks": 11 },
+    { "id": 4060691638, "mode": 1, "playerid": 733893, "3bv": 26, "clicks": 13 },
+    { "id": 4057263005, "mode": 1, "playerid": 733893, "3bv": 20, "clicks": 10 },
+    { "id": 4053946638, "mode": 1, "playerid": 733893, "3bv": 20, "clicks": 10 },
+    { "id": 4045957526, "mode": 1, "playerid": 733893, "3bv": 26, "clicks": 13 },
+    { "id": 4004038926, "mode": 1, "playerid": 733893, "3bv": 22, "clicks": 11 },
+    { "id": 3961206841, "mode": 1, "playerid": 733893, "3bv": 26, "clicks": 13 },
+    { "id": 3882463824, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 3867314656, "mode": 1, "playerid": 733893, "3bv": 10, "clicks": 5 },
+    { "id": 3835875531, "mode": 1, "playerid": 733893, "3bv": 26, "clicks": 13 },
+    { "id": 3441512665, "mode": 1, "playerid": 733893, "3bv": 32, "clicks": 16 },
+    { "id": 3309386810, "mode": 1, "playerid": 733893, "3bv": 10, "clicks": 5 },
+    { "id": 3301808975, "mode": 1, "playerid": 733893, "3bv": 20, "clicks": 10 },
+    { "id": 3293649653, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 3282968737, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 3263062542, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 3151251088, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 3127099623, "mode": 1, "playerid": 733893, "3bv": 22, "clicks": 11 },
+    { "id": 3078308747, "mode": 1, "playerid": 733893, "3bv": 16, "clicks": 8 },
+    { "id": 2822830230, "mode": 1, "playerid": 733893, "3bv": 22, "clicks": 11 },
+    { "id": 2807368166, "mode": 1, "playerid": 733893, "3bv": 26, "clicks": 13 },
+    { "id": 2789980903, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 2698749959, "mode": 1, "playerid": 733893, "3bv": 32, "clicks": 16 },
+    { "id": 2568163515, "mode": 1, "playerid": 733893, "3bv": 28, "clicks": 14 },
+    { "id": 1517532990, "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 },
+    { "id": 1483942752, "mode": 1, "playerid": 733893, "3bv": 20, "clicks": 10 },
+    { "id": 1404587020, "mode": 1, "playerid": 733893, "3bv": 22, "clicks": 11 },
+    { "id": 1223574070, "mode": 1, "playerid": 733893, "3bv": 28, "clicks": 14 },
+    { "id": 808240763,  "mode": 1, "playerid": 733893, "3bv": 24, "clicks": 12 }
+     
 ]
 `;
 
