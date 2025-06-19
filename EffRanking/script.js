@@ -34,6 +34,8 @@ const playersJSON = `
     [8974083, "Md-101"],
     [1457912, "Thrainos"],
     [4946833, "rustixx"],
+    [15734516, "vvvf"],
+    [7334132, "Oreh1337"],
     [3697173, "oreotheuser"]
   ]
 }
@@ -297,7 +299,15 @@ const gamesJSON = `
     [4312368339, 1, 4946833, 20 , 10],
     [4470366309, 1, 4946833, 32 , 16],
     [4562684580, 1, 4946833, 14 , 7],
-    [4593911998, 1, 4946833, 32 , 16]
+    [4593911998, 1, 4946833, 32 , 16],
+    [4405065385, 1, 15734516, 22 , 10],
+    [3123330086, 1, 7334132, 22, 10],
+    [3793961803, 1, 7334132, 17 , 8],
+    [3795405180, 1, 7334132, 21 , 10],
+    [3070258353, 1, 7334132, 23, 11],
+    [3772004595, 1, 7334132, 25 , 12],
+    [3132221898, 1, 7334132, 35 ,17],
+    [4054876113, 1, 7334132, 35 , 17]
   ]
 }
 `;
@@ -402,15 +412,19 @@ const uniqueGames = Array.from(uniqueGamesMap.values());
   }
   filterInfo.textContent = infoText || 'All games';
 
+  let i = 0
+
   uniqueGames.forEach(game => {
     const playerName = playerMap[game.playerid] || 'Unknown';
     const modeName = modes[game.mode] || 'Unknown';
     const modeColor = modeColorMap[game.mode] || 'black';
     const efficiency = Math.round((game["3bv"] / game.clicks) * 100);
     const gameUrl = `https://minesweeper.online/game/${game.id}`;
+    i++;
 
     const row = document.createElement('tr');
     row.innerHTML = `
+      <td>${i}</td>
       <td><a href="#" class="player-link" data-playerid="${game.playerid}">${playerName}</a></td>
       <td><a href="${gameUrl}" class="efficiency-text" target="_blank" rel="noopener noreferrer">${efficiency}%</a></td>
       <td>${game["3bv"]}</td>
