@@ -12,7 +12,6 @@
 
 
 
-/* Reset some default styles */
 * {
   box-sizing: border-box;
   margin: 0px;
@@ -29,7 +28,6 @@ a, span {
 
 
 
-/* Set a background color for the body with a hint of blue */
 body {
   background-color: var(--dark);
   color:var(--white);  
@@ -37,14 +35,12 @@ body {
 }
 
 
-/* Style the container for the content */
 .container {
   max-width: 800px;
   margin: 0 auto;
   padding: 40px;
 }
 
-/* Style the headings */
 h1, h2, h3 {
   color: var(--white);
   margin-bottom: 10px;
@@ -52,14 +48,9 @@ h1, h2, h3 {
   padding-bottom: 10px;
   text-align: left;
   
-} 
-h1::before, h2::before, h3::before {
-  content: '\25C6'; 
-  color: var(--pink);
-  margin-left: 10px; 
 }
 
-/* Style the horizontal lines
+/*
 hr {
   border: none;
   border-top: 4px solid var(--white);
@@ -69,7 +60,6 @@ hr {
 
 
 /* --------------PARAGRAPH-------------- */
-/* Style the paragraphs */
 p {
   background-color: var(--light);
   padding: 20px;
@@ -95,15 +85,15 @@ p.special {
   font-style: italic;
   padding: 5px;
   transition: color 0.08s;
-  color: #888; /* Adjust the color when hovered */
+  color: #888;
 }
 
 p.special:hover {
-  color: #ddd; /* Adjust the color when hovered */
+  color: #ddd;
 }
 
 
-/* Style the link text
+/*
 .link-text {
   color: #fff;
   text-decoration: underline;
@@ -114,7 +104,6 @@ p.special:hover {
 }
 
 /* --------------IMAGE AND VIDEO-------------- */
-/* Default image */
 
 .profile-photo {
   position: absolute;
@@ -137,7 +126,6 @@ img {
   /* box-shadow: 0px 0px 5px var(--pink); */
 }
 
-/* Image while hovering */
 img:hover {
   opacity: 1;
   transform: scale(1.01);
@@ -164,15 +152,15 @@ ul ul {
 }
 
 a {
-  color: var(--yellow); /* Default link color */
+  color: var(--yellow);
 }
 
 /* =========== */
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Three equal-width columns, adjust as needed */
-  grid-gap: 10px; /* Adjust the gap between grid items as needed */
+  grid-template-columns: repeat(3, 1fr); 
+  grid-gap: 10px; 
 }
 
 .grid-item {
